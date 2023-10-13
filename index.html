@@ -16,7 +16,7 @@
     <!-- Choices will be populated here -->
   </div>
 
-  <div id="chosenAnswers" class="max-w-xl mx-auto text-xs pt-16">
+  <div id="chosenAnswers" class="max-w-md mx-auto text-xs pt-16">
     <!-- Chosen answers will be displayed here -->
   </div>
 
@@ -54,8 +54,8 @@
           choiceNotChosen.innerHTML = notChosen;
 
           // Add 'chosen' class to the chosen choice
-          choiceChosen.className = 'chosen p-4';
-          choiceNotChosen.className = 'p-4';
+          choiceChosen.className = 'chosen p-2 bg-gray-50';
+          choiceNotChosen.className = 'p-2 bg-gray-50 mb-4';
 
           // Append both to the chosenAnswers div
           chosenAnswers.insertBefore(choiceNotChosen, chosenAnswers.firstChild);
