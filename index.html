@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shooters</title>
+  <style>
+    .chosen {
+      border: 1px solid blue;
+    }
+  </style>
+   <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8">
+
+  <div id="choiceContainer" class="grid grid-cols-2 gap-8 max-w-xl mx-auto text-xl">
+    <!-- Choices will be populated here -->
+  </div>
+
+  <div id="chosenAnswers" class="max-w-xl mx-auto text-xs pt-16">
+    <!-- Chosen answers will be displayed here -->
+  </div>
+
+  <script>
+    // Fetch the JSON file
+    fetch('choices.json')
+      .then(response => response.json())
+      .then(data => {
+        // Function to get a random element from an array
+        const getRandomElement = (arr) => {
+          return arr[Math.floor(Math.random() * arr.length)];
+        };
+
+        // Function to load a random choice
+        const loadChoice = () => {
+          const randomChoice = getRandomElement(data);
+
+          const choiceContainer = document.getElementById('choiceContainer');
+          choiceContainer.innerHTML = `
+            <div class="hover:bg-gray-100 shadow-lg rounded-lg bg-white p-8 cursor-pointer items-center flex h-64" onclick="selectChoice('${randomChoice.choice1}', '${randomChoice.choice2}')">${randomChoice.choice1}</div>
+            <div class="hover:bg-gray-100 shadow-lg rounded-lg bg-white p-8 cursor-pointer items-center flex  h-64" onclick="selectChoice('${randomChoice.choice2}', '${randomChoice.choice1}')">${randomChoice.choice2}</div>
+          `;
+        };
+
+        // Function to select a choice
+        window.selectChoice = (chosen, notChosen) => {
+          const chosenAnswers = document.getElementById('chosenAnswers');
+
+          // Create elements for both choices
+          const choiceChosen = document.createElement('div');
+          const choiceNotChosen = document.createElement('div');
+
+          // Set their innerHTML
+          choiceChosen.innerHTML = chosen;
+          choiceNotChosen.innerHTML = notChosen;
+
+          // Add 'chosen' class to the chosen choice
+          choiceChosen.className = 'chosen p-4';
+          choiceNotChosen.className = 'p-4';
+
+          // Append both to the chosenAnswers div
+          chosenAnswers.insertBefore(choiceNotChosen, chosenAnswers.firstChild);
+          chosenAnswers.insertBefore(choiceChosen, chosenAnswers.firstChild);
+
+
+          // Load the next choice
+          loadChoice();
+        };
+
+        // Load the initial choice
+        loadChoice();
+      });
+  </script>
+
+</body>
+</html>
