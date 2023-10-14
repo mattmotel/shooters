@@ -25,32 +25,44 @@
     <!-- Choices will be populated here -->
   </div>
 
-  <div id="chosenAnswers" class="max-w-md mx-auto text-xs pt-16">
+  <div id="doveTally" class="text-center text-2xl mt-8">
+    <!-- Running Dove Tally will be displayed here -->
+  </div>
+
+  <div id="chosenAnswers" class="max-w-md mx-auto text-xs mt-8">
     <!-- Chosen answers will be displayed here -->
   </div>
 
   <script>
+    // Initialize Dove tally
+    let doveTally = 0;
+
     // Fetch the JSON file
     fetch('choices.json')
       .then(response => response.json())
       .then(data => {
-        // Function to get a random element from an array
+
         const getRandomElement = (arr) => {
           return arr[Math.floor(Math.random() * arr.length)];
         };
 
-        // Function to display a random message and number
         const displayFlashMessage = () => {
           const flashMessage = document.getElementById('flashMessage');
           const randomMessage = Math.random() < 0.5 ? "CORRECT" : "WRONG";
           const textColor = randomMessage === "CORRECT" ? "text-green-600" : "text-red-600";
           const randomNumber = Math.floor(Math.random() * 101);
+
           flashMessage.innerHTML = `<span class="${textColor}">${randomMessage}</span> - ${randomNumber} Doves`;
           flashMessage.classList.remove('fade-out');
           setTimeout(() => flashMessage.classList.add('fade-out'), 50);
+
+          // Update Dove tally
+          doveTally += randomNumber;
+          document.getElementById('doveTally').innerHTML = `Total Doves: ${doveTally}`;
+
+          return { randomMessage, randomNumber };
         };
 
-        // Function to load a random choice
         const loadChoice = () => {
           const randomChoice = getRandomElement(data);
           const choiceContainer = document.getElementById('choiceContainer');
@@ -60,34 +72,25 @@
           `;
         };
 
-        // Function to select a choice
         window.selectChoice = (chosen, notChosen) => {
+          const { randomMessage, randomNumber } = displayFlashMessage();
           const chosenAnswers = document.getElementById('chosenAnswers');
 
-          // Display flash message and number
-          displayFlashMessage();
-
-          // Create elements for both choices
           const choiceChosen = document.createElement('div');
           const choiceNotChosen = document.createElement('div');
 
-          // Set their innerHTML
-          choiceChosen.innerHTML = chosen;
+          choiceChosen.innerHTML = `${chosen} - <span class="${randomMessage === 'CORRECT' ? 'text-green-600' : 'text-red-600'}">${randomMessage}</span> - ${randomNumber} Doves`;
           choiceNotChosen.innerHTML = notChosen;
 
-          // Add 'chosen' class to the chosen choice
           choiceChosen.className = 'chosen p-2 bg-gray-50';
           choiceNotChosen.className = 'p-2 bg-gray-50 mb-4';
 
-          // Append both to the chosenAnswers div
           chosenAnswers.insertBefore(choiceNotChosen, chosenAnswers.firstChild);
           chosenAnswers.insertBefore(choiceChosen, chosenAnswers.firstChild);
 
-          // Load the next choice
           loadChoice();
         };
 
-        // Load the initial choice
         loadChoice();
       });
   </script>
